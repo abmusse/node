@@ -25,6 +25,11 @@
 #define OPENSSL_SCTP_FORWARD_CUM_TSN_CHUNK_TYPE 0xc0
 #endif
 
+#if defined(_AIX) && defined(_AIX72)
+/* AIX 7.2+ has sendmmsg/recvmmsg but needs this header for declarations */
+#include <net/proto_uipc.h>
+#endif
+
 #if defined(OPENSSL_SYS_LINUX) && !defined(IP_MTU)
 #define IP_MTU 14 /* linux is lame */
 #endif
@@ -68,8 +73,8 @@
 #undef NO_RECVMMSG
 #define NO_RECVMMSG
 #endif
-#if defined(_AIX)
-/* Force fallback to sndmsg and recvmsg */
+#if defined(_AIX) && !defined(_AIX72)
+/* AIX < 7.2 does not have sendmmsg/recvmmsg */
 #undef NO_RECVMMSG
 #define NO_RECVMMSG
 #endif
