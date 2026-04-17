@@ -12633,9 +12633,14 @@ TryToCopyAndConvertArrayToCppBuffer<CTypeInfoBuilder<double>::Build().GetId(),
 
 std::string SourceLocation::ToString() const {
   if (!*this) return {};
+#ifdef V8_HAS_SOURCE_LOCATION
   return (std::ostringstream{} << loc_.function_name() << '@'
                                << loc_.file_name() << ':' << loc_.line())
       .str();
+#else
+  return (std::ostringstream{} << function_ << '@' << file_ << ':' << line_)
+      .str();
+#endif
 }
 
 }  // namespace v8
